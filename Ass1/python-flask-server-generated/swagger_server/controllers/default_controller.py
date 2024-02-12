@@ -4,6 +4,7 @@ import six
 from swagger_server.models.inline_response200 import InlineResponse200  # noqa: E501
 from swagger_server.models.student import Student  # noqa: E501
 from swagger_server import util
+from swagger_server.service.student_service import *
 
 
 def add_student(body=None):  # noqa: E501
