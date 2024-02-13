@@ -1,0 +1,1567 @@
+{
+	"info": {
+		"_postman_id": "b3adcbcc-a568-4a0f-aa43-a509305ebd5f",
+		"name": "devops_tutorial",
+		"description": "Swagger tutorial",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "student",
+			"item": [
+				{
+					"name": "1.Add a new student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";",
+									"// pm.globals.set(\"student_id\", responseBody);",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"student_id\", jsonData);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function random_string(size){",
+									"    var str = \"\";",
+									"    for (var i = 0; i < size; i++){",
+									"        str += random_character();",
+									"    }",
+									"    return str;",
+									"}",
+									"function random_character() {",
+									"    var chars = \"0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ\";",
+									"    return chars.substr( Math.floor(Math.random() * 62), 1);",
+									"}",
+									"",
+									"",
+									"var first_name = random_string(20);",
+									"var last_name = random_string(20);",
+									"",
+									"postman.setEnvironmentVariable(\"first_name\", first_name);",
+									"postman.setEnvironmentVariable(\"last_name\", last_name);",
+									"",
+									"",
+									"var start = new Date().getTime();",
+									"postman.setEnvironmentVariable(\"start_time\", start);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{first_name}}\",\n    \"last_name\": \"{{last_name}}\",\n    \"gradeRecords\": [\n        {\n            \"subject_name\": \"{{subject_name_1}}\",\n            \"grade\": {{grade_1}}\n        },\n        {\n            \"subject_name\": \"{{subject_name_2}}\",\n            \"grade\": {{grade_2}}\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "\"<string>\""
+						},
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "Method Not Allowed",
+							"code": 405,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "2.Find student by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";",
+									"var jsonData = JSON.parse(responseBody);",
+									"first_name = postman.getEnvironmentVariable(\"first_name\");",
+									"tests[\"Name must be \"+first_name] = jsonData.first_name == first_name;",
+									"last_name = postman.getEnvironmentVariable(\"last_name\");",
+									"tests[\"last name  must be \"+last_name] = jsonData.last_name == last_name;",
+									"",
+									"subject_name_1 = postman.getEnvironmentVariable(\"subject_name_1\");",
+									"grade_1 = postman.getEnvironmentVariable(\"grade_1\");",
+									"tests[\"Subject must be \"+subject_name_1] = jsonData['grade_records'][0]['subject_name'] == subject_name_1;",
+									"tests[\"Grade of \"+subject_name_1+\" must be \"+grade_1] = jsonData['grade_records'][0]['grade'] == grade_1;",
+									"",
+									"subject_name_2 = postman.getEnvironmentVariable(\"subject_name_2\");",
+									"grade_2 = postman.getEnvironmentVariable(\"grade_2\");",
+									"tests[\"Subject must be \"+subject_name_2] = jsonData['grade_records'][1]['subject_name'] == subject_name_2;",
+									"tests[\"Grade of \"+subject_name_1+\" must be \"+grade_1] = jsonData['grade_records'][1]['grade'] == grade_2;",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/student/{{student_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student",
+								"{{student_id}}"
+							]
+						},
+						"description": "Returns a single student"
+					},
+					"response": [
+						{
+							"name": "Invalid ID supplied",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id?subject=<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"query": [
+										{
+											"key": "subject",
+											"value": "<string>"
+										}
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "student not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id?subject=<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"query": [
+										{
+											"key": "subject",
+											"value": "<string>"
+										}
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id?subject=<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"query": [
+										{
+											"key": "subject",
+											"value": "<string>"
+										}
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"student_id\": 0,\n \"last_name\": \"last_name\",\n \"grades\": {\n  \"key\": \"grades\"\n },\n \"first_name\": \"first_name\"\n}"
+						}
+					]
+				},
+				{
+					"name": "3.Find student by wrong ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/student/9999999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student",
+								"9999999"
+							]
+						},
+						"description": "Returns a single student"
+					},
+					"response": [
+						{
+							"name": "student not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id?subject=<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"query": [
+										{
+											"key": "subject",
+											"value": "<string>"
+										}
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Invalid ID supplied",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id?subject=<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"query": [
+										{
+											"key": "subject",
+											"value": "<string>"
+										}
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id?subject=<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"query": [
+										{
+											"key": "subject",
+											"value": "<string>"
+										}
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"student_id\": 0,\n \"last_name\": \"last_name\",\n \"grades\": {\n  \"key\": \"grades\"\n },\n \"first_name\": \"first_name\"\n}"
+						}
+					]
+				},
+				{
+					"name": "4.delete student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/student/{{student_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student",
+								"{{student_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"student_id\": 0,\n \"last_name\": \"last_name\",\n \"grades\": {\n  \"key\": \"grades\"\n },\n \"first_name\": \"first_name\"\n}"
+						},
+						{
+							"name": "Invalid ID supplied",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "student not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "5.delete non existing student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";",
+									"let count = 0;",
+									"postman.setEnvironmentVariable(\"count\", count);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/student/{{student_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student",
+								"{{student_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Invalid ID supplied",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"student_id\": 0,\n \"last_name\": \"last_name\",\n \"grades\": {\n  \"key\": \"grades\"\n },\n \"first_name\": \"first_name\"\n}"
+						},
+						{
+							"name": "student not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/student/:student_id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student",
+										":student_id"
+									],
+									"variable": [
+										{
+											"key": "student_id"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "6.Add a new student with only first name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function random_string(size){",
+									"    var str = \"\";",
+									"    for (var i = 0; i < size; i++){",
+									"        str += random_character();",
+									"    }",
+									"    return str;",
+									"}",
+									"function random_character() {",
+									"    var chars = \"0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ\";",
+									"    return chars.substr( Math.floor(Math.random() * 62), 1);",
+									"}",
+									"",
+									"",
+									"var first_name = random_string(20);",
+									"var last_name = random_string(20);",
+									"",
+									"postman.setEnvironmentVariable(\"first_name\", first_name);",
+									"postman.setEnvironmentVariable(\"last_name\", last_name);",
+									"",
+									"",
+									"var start = new Date().getTime();",
+									"postman.setEnvironmentVariable(\"start_time\", start);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{first_name}}\",\n    \"gradeRecords\": [\n        {\n            \"subject_name\": \"{{subject_name_1}}\",\n            \"grade\": {{grade_1}}\n        },\n        {\n            \"subject_name\": \"{{subject_name_2}}\",\n            \"grade\": {{grade_2}}\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "\"<string>\""
+						},
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "Method Not Allowed",
+							"code": 405,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "7.Add a new student with only last name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function random_string(size){",
+									"    var str = \"\";",
+									"    for (var i = 0; i < size; i++){",
+									"        str += random_character();",
+									"    }",
+									"    return str;",
+									"}",
+									"function random_character() {",
+									"    var chars = \"0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ\";",
+									"    return chars.substr( Math.floor(Math.random() * 62), 1);",
+									"}",
+									"",
+									"",
+									"var first_name = random_string(20);",
+									"var last_name = random_string(20);",
+									"",
+									"postman.setEnvironmentVariable(\"first_name\", first_name);",
+									"postman.setEnvironmentVariable(\"last_name\", last_name);",
+									"",
+									"",
+									"var start = new Date().getTime();",
+									"postman.setEnvironmentVariable(\"start_time\", start);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"last_name\": \"{{last_name}}\",\n    \"gradeRecords\": [\n        {\n            \"subject_name\": \"{{subject_name_1}}\",\n            \"grade\": {{grade_1}}\n        },\n        {\n            \"subject_name\": \"{{subject_name_2}}\",\n            \"grade\": {{grade_2}}\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "\"<string>\""
+						},
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "Method Not Allowed",
+							"code": 405,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "8.Add a new student without subject",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function random_string(size){",
+									"    var str = \"\";",
+									"    for (var i = 0; i < size; i++){",
+									"        str += random_character();",
+									"    }",
+									"    return str;",
+									"}",
+									"function random_character() {",
+									"    var chars = \"0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ\";",
+									"    return chars.substr( Math.floor(Math.random() * 62), 1);",
+									"}",
+									"",
+									"",
+									"var first_name = random_string(20);",
+									"var last_name = random_string(20);",
+									"",
+									"postman.setEnvironmentVariable(\"first_name\", first_name);",
+									"postman.setEnvironmentVariable(\"last_name\", last_name);",
+									"",
+									"",
+									"var start = new Date().getTime();",
+									"postman.setEnvironmentVariable(\"start_time\", start);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{first_name}}\",\n    \"last_name\": \"{{last_name}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "Method Not Allowed",
+							"code": 405,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "\"<string>\""
+						}
+					]
+				},
+				{
+					"name": "9.Add a new random student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"student_id\", jsonData);",
+									"",
+									"count = postman.getEnvironmentVariable(\"count\");",
+									"count++;",
+									"postman.setEnvironmentVariable(\"count\",count);",
+									"console.log(count)",
+									"if (count < 200) {",
+									"    postman.setNextRequest(\"9.Add a new random student\");",
+									"} else{",
+									"    // pm.test(\"Total elapsed time must be  less than 100\", function () {",
+									"           ",
+									"    //     start_time = postman.getEnvironmentVariable(\"start_time\"); ",
+									"    //     var elapsed = new Date().getTime() - start_time;  //milliseconds",
+									"    //     console.log(\"elapsed: \"+elapsed)",
+									"    //     pm.expect(elapsed).to.be.below(100);",
+									"    // });",
+									"    // setTimeout(() => { console.log(\"waiting!\"); }, 10000);",
+									"    postman.setNextRequest(\"13.Find_random_student\");",
+									"}",
+									"",
+									"    ",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function random_string(size){",
+									"    var str = \"\";",
+									"    for (var i = 0; i < size; i++){",
+									"        str += random_character();",
+									"    }",
+									"    return str;",
+									"}",
+									"function random_character() {",
+									"    var chars = \"0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ\";",
+									"    return chars.substr( Math.floor(Math.random() * 62), 1);",
+									"}",
+									"",
+									"",
+									"var first_name = random_string(20);",
+									"var last_name = random_string(20);",
+									"",
+									"postman.setEnvironmentVariable(\"first_name\", first_name);",
+									"postman.setEnvironmentVariable(\"last_name\", last_name);",
+									"",
+									"",
+									"var start = new Date().getTime();",
+									"postman.setEnvironmentVariable(\"start_time\", start);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{first_name}}\",\n    \"last_name\": \"{{last_name}}\",\n    \"gradeRecords\": [\n        {\n            \"subject_name\": \"{{subject_name_1}}\",\n            \"grade\": {{grade_1}}\n        },\n        {\n            \"subject_name\": \"{{subject_name_2}}\",\n            \"grade\": {{grade_2}}\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "\"<string>\""
+						},
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "Method Not Allowed",
+							"code": 405,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "10.Add a new random student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"student_id\", jsonData);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function random_string(size){",
+									"    var str = \"\";",
+									"    for (var i = 0; i < size; i++){",
+									"        str += random_character();",
+									"    }",
+									"    return str;",
+									"}",
+									"function random_character() {",
+									"    var chars = \"0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ\";",
+									"    return chars.substr( Math.floor(Math.random() * 62), 1);",
+									"}",
+									"",
+									"",
+									"var first_name = random_string(20);",
+									"var last_name = random_string(20);",
+									"",
+									"postman.setEnvironmentVariable(\"first_name\", first_name);",
+									"postman.setEnvironmentVariable(\"last_name\", last_name);",
+									"",
+									"",
+									"var start = new Date().getTime();",
+									"postman.setEnvironmentVariable(\"start_time\", start);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{first_name}}\",\n    \"last_name\": \"{{last_name}}\",\n    \"gradeRecords\": [\n        {\n            \"subject_name\": \"{{subject_name_1}}\",\n            \"grade\": {{grade_1}}\n        },\n        {\n            \"subject_name\": \"{{subject_name_2}}\",\n            \"grade\": {{grade_2}}\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "Method Not Allowed",
+							"code": 405,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "\"<string>\""
+						}
+					]
+				},
+				{
+					"name": "11.Add existing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 409\"] = responseCode.code === 409;",
+									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{first_name}}\",\n    \"last_name\": \"{{last_name}}\",\n    \"gradeRecords\": [\n        {\n            \"subject_name\": \"{{subject_name_1}}\",\n            \"grade\": {{grade_1}}\n        },\n        {\n            \"subject_name\": \"{{subject_name_2}}\",\n            \"grade\": {{grade_2}}\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"student"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "\"<string>\""
+						},
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"student_id\": 0,\n    \"last_name\": \"last_name\",\n    \"grades\": {\n        \"key\": \"grades\"\n    },\n    \"first_name\": \"first_name\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/student",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"student"
+									]
+								}
+							},
+							"status": "Method Not Allowed",
+							"code": 405,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "/service-api",
+			"type": "string"
+		}
+	]
+}

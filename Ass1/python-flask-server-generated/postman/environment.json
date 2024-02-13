@@ -1,0 +1,59 @@
+{
+	"id": "88c75102-7fcb-4d60-8034-16cef8b03aa3",
+	"name": "devops_tutorial",
+	"values": [
+		{
+			"key": "baseUrl",
+			"value": "http://172.17.0.2:8080/tutorial/1.0.0/",
+			"enabled": true
+		},
+		{
+			"key": "student_id",
+			"value": "1",
+			"enabled": true
+		},
+		{
+			"key": "count",
+			"value": "1",
+			"enabled": true
+		},
+		{
+			"key": "first_name",
+			"value": "C8JsxHFRRDqw1fdUKrkp",
+			"enabled": true
+		},
+		{
+			"key": "last_name",
+			"value": "TI11PacK8o5cUmRCo3at",
+			"enabled": true
+		},
+		{
+			"key": "start_time",
+			"value": "1641916624432",
+			"enabled": true
+		},
+		{
+			"key": "subject_name_1",
+			"value": "The Mathematics of Quantum Neutrino Fields",
+			"enabled": true
+		},
+		{
+			"key": "subject_name_2",
+			"value": "20th Century History",
+			"enabled": true
+		},
+		{
+			"key": "grade_1",
+			"value": "6.1",
+			"enabled": true
+		},
+		{
+			"key": "grade_2",
+			"value": "8.9",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2022-01-11T15:57:32.703Z",
+	"_postman_exported_using": "Postman/7.36.5"
+}
