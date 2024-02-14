@@ -31,7 +31,7 @@ def add(student=None):
 
     doc_id = student_db.insert(student.to_dict())
     student.student_id = doc_id
-    return student.student_id
+    return student.student_id, 200
 
 
 def get_by_id(student_id=None, subject=None):
@@ -41,7 +41,7 @@ def get_by_id(student_id=None, subject=None):
 
     if not student:
         return 'not found', 404
-    return student
+    return student, 200
 
 
 def delete(student_id=None):
