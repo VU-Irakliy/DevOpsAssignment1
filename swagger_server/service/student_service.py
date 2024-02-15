@@ -34,24 +34,39 @@ def add(student=None):
     return student.student_id, 200
 
 
-def get_by_id(student_id=None, subject=None):
-    # student = student_db.get(doc_id=int(student_id))
-    Student = Query()
-    student = student_db.search(Student.student_id == int(student_id))
+# def get_by_id(student_id=None, subject=None):
+#     # student = student_db.get(doc_id=int(student_id))
+#     Student = Query()
+#     student = student_db.search(Student.student_id == int(student_id))
+#
+#     if not student:
+#         return 'not found', 404
+#     return student, 200
 
+
+# def delete(student_id=None):
+#     Student = Query()
+#     search_result = student_db.search(Student.student_id == int(student_id))
+#
+#     if not search_result:
+#         return 'not found', 404
+#
+#     # Remove documents matching the student_id
+#     student_db.remove(Student.student_id == int(student_id))
+#     return 'Successfully removed Student ID ' + str(student_id), 200
+
+def get_by_id(student_id=None, subject=None):
+    student = student_db.get(doc_id=int(student_id))
     if not student:
         return 'not found', 404
-    return student, 200
+    student['student_id'] = student_id
+    print(student)
+    return student
 
 
 def delete(student_id=None):
-    Student = Query()
-    search_result = student_db.search(Student.student_id == int(student_id))
-
-    if not search_result:
+    student = student_db.get(doc_id=int(student_id))
+    if not student:
         return 'not found', 404
-
-    # Remove documents matching the student_id
-    student_db.remove(Student.student_id == int(student_id))
-    return 'Successfully removed Student ID ' + str(student_id), 200
-
+    student_db.remove(doc_ids=[int(student_id)])
+    return student_id
