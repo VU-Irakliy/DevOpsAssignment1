@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: service
+  name: service
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    protocol: TCP
+    name: http
+  selector:
+    io.kompose.service: service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: service
+  name: service
+spec:
+  selector:
+    matchLabels:
+      io.kompose.service: service
+  replicas: 1
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: service
+    spec:
+      containers:
+      - env:
+        - name: MONGO_URI
+          value: mongodb://mongo:27017
+        image: irakliy/student_service
+        name: service
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+status: {}
