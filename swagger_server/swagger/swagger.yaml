@@ -60,7 +60,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/Student'
         "400":
           description: invalid ID
         "404":
@@ -134,12 +134,12 @@ components:
       example:
         grade: 6.5
         subject_name: subject_name
-    inline_response_200:
-      type: object
-      properties:
-        message:
-          type: string
-          example: "Student with ID {student_id} has been successfully deleted."
-      example:
-        message: "Student with ID {student_id} has been successfully deleted."
+    # inline_response_200:
+    #   type: object
+    #   properties:
+    #     message:
+    #       type: string
+    #       example: "Student with ID {student_id} has been successfully deleted."
+    #   example:
+    #     message: "Student with ID {student_id} has been successfully deleted."
 
